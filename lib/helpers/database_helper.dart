@@ -1,3 +1,5 @@
+import 'package:alhadid/models/books.dart';
+import 'package:alhadid/models/chapter.dart';
 import 'package:alhadid/models/hadith.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
@@ -31,14 +33,14 @@ class DictionaryDataBaseHelper {
   }
 
   /// get all the words from english dictionary
-  Future<List<Hadith>> getAllTheWordsEnglish() async {
+  Future<List<Hadith>> getAllTheHadiths() async {
     if (_db == null) {
       throw "Database is not initialized, initialize using [init()] function";
     }
-    List<Map<String, dynamic>> words = [];
+    List<Map<String, dynamic>> hadiths = [];
 
     await _db!.transaction((txn) async {
-      words = await txn.query(
+      hadiths = await txn.query(
         "hadith",
         columns: [
           "hadith_id",
@@ -58,6 +60,54 @@ class DictionaryDataBaseHelper {
       );
     });
 
-    return words.map((e) => Hadith.fromMap(e)).toList();
+    return hadiths.map((e) => Hadith.fromMap(e)).toList();
+  }
+
+  Future<List<Book>> getAllTheBooks() async {
+    if (_db == null) {
+      throw "Database is not initialized, initialize using [init()] function";
+    }
+    List<Map<String, dynamic>> hadiths = [];
+
+    await _db!.transaction((txn) async {
+      hadiths = await txn.query(
+        "books",
+        columns: [
+          "id",
+          "title",
+          "title_ar",
+          "number_of_hadis",
+          "abvr_code",
+          "book_name",
+          "book_descr"
+        ],
+      );
+    });
+
+    return hadiths.map((e) => Book.fromMap(e)).toList();
+  }
+
+  Future<List<Chapter>> getAllTheChapters() async {
+    if (_db == null) {
+      throw "Database is not initialized, initialize using [init()] function";
+    }
+    List<Map<String, dynamic>> hadiths = [];
+
+    await _db!.transaction((txn) async {
+      hadiths = await txn.query(
+        "chapter",
+        columns: [
+          "id",
+          "chapter_id",
+          "book_id",
+          "title",
+          "number",
+          "hadis_range",
+          "book_name",
+        ],
+      );
+    });
+
+    return hadiths.map((e) => Chapter.fromMap(e)).toList();
   }
 }

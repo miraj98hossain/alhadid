@@ -16,7 +16,7 @@ class HadithDetailsController extends GetxController {
   }
 
   Future<void> _loadHadithData() async {
-    hadithList.value = await _dbHelper.getAllTheWordsEnglish();
+    hadithList.value = await _dbHelper.getAllTheHadiths();
     if (hadithList.isEmpty) {
       error.value = true;
       loading.value = false;
