@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:alhadid/models/hadith.dart';
 import 'package:alhadid/models/section.dart';
 import 'package:alhadid/presentations/hadith_details_screen/get_controller/hadith_details_controller.dart';
 import 'package:bangla_converter/convert_file/convert_code.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class HadithDetailsScreen extends StatefulWidget {
@@ -27,7 +30,10 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
       () {
         if (hadithDetailsController.loading.value) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.white,
+              color: Color.fromRGBO(17, 140, 111, 1),
+            ),
           );
         }
         if (hadithDetailsController.error.value) {
@@ -235,8 +241,8 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                                 textDirection: TextDirection.rtl,
                                 style: const TextStyle(
                                   fontFamily: 'Arabic',
-                                  fontSize: 15,
-                                  color: Colors.black54,
+                                  fontSize: 20,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -295,7 +301,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                if (Platform.isAndroid) {
+                  SystemNavigator.pop();
+                } else if (Platform.isIOS) {
+                  exit(0);
+                }
               },
               icon: const Icon(
                 color: Colors.white,
@@ -324,6 +334,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ],
+            ),
+            const Spacer(),
+            Container(
+              height: 22,
+              width: 20,
+              padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.white, width: 1),
+              ),
+              child: Image.asset(
+                "assets/images/filter.png",
+                color: Colors.white,
+                height: 22,
+                width: 20,
+              ),
             ),
           ],
         ),
