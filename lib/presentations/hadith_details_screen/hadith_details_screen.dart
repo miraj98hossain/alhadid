@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alhadid/models/hadith.dart';
+import 'package:alhadid/models/section.dart';
 import 'package:alhadid/presentations/hadith_details_screen/get_controller/hadith_details_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,97 +26,109 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color.fromRGBO(244, 244, 244, 1),
-        appBar: const CustomAppBar(),
-        body: Obx(
-          () {
-            if (hadithDetailsController.loading.value) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (hadithDetailsController.error.value) {
-              return const Center(
-                child: Text("Couldn't load data"),
-              );
-            }
-            if (hadithDetailsController.success.value) {
-              return ListView.builder(
-                itemCount: hadithDetailsController.hadithList.length,
-                itemBuilder: (context, index) {
-                  Hadith hadith = hadithDetailsController.hadithList[index];
-                  log(hadith.toJson());
-                  return Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text:
-                                          "${hadith.chapterId}/${hadith.sectionId}."
-                                          "অধ্যায়ঃ ",
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color.fromRGBO(17, 140, 111, 1),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: hadith.bn,
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+    return SafeArea(child: Obx(
+      () {
+        if (hadithDetailsController.loading.value) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (hadithDetailsController.error.value) {
+          return const Center(
+            child: Text("Couldn't load data"),
+          );
+        }
+        if (hadithDetailsController.success.value) {
+          return Scaffold(
+            backgroundColor: const Color.fromRGBO(244, 244, 244, 1),
+            appBar: CustomAppBar(
+              title: hadithDetailsController.bookList.first.bookName!,
+              subtitle: hadithDetailsController.chapterList.first.title!,
+            ),
+            body: ListView.builder(
+              itemCount: hadithDetailsController.sectionList.length,
+              itemBuilder: (context, index) {
+                Section section = hadithDetailsController.sectionList[index];
+                List<Hadith> hadithList =
+                    hadithDetailsController.hadithList.where(
+                  (p0) {
+                    return p0.sectionId == section.id;
+                  },
+                ).toList();
+                return Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 10),
-                      Container(
-                        height: 100,
-                        width: double.infinity,
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              );
-            }
-            return Container();
-          },
-        ),
-      ),
-    );
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: "${section.number} ",
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Color.fromRGBO(17, 140, 111, 1),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: index == 0 ? section.title : "",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...List.generate(
+                      hadithList.length,
+                      (index) {
+                        return Container(
+                          height: 100,
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                );
+              },
+            ),
+          );
+        }
+        return const SizedBox();
+      },
+    ));
   }
 }
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
+    required this.title,
+    required this.subtitle,
   });
-
+  final String title;
+  final String subtitle;
   @override
   Widget build(BuildContext context) {
     return CustomPaint(

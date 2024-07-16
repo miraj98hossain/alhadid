@@ -120,7 +120,7 @@ class DictionaryDataBaseHelper {
 
     await _db!.transaction((txn) async {
       hadiths = await txn.query(
-        "chapter",
+        "section",
         columns: [
           "id",
           "book_id",
