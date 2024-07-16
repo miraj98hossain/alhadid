@@ -1,6 +1,7 @@
 import 'package:alhadid/models/books.dart';
 import 'package:alhadid/models/chapter.dart';
 import 'package:alhadid/models/hadith.dart';
+import 'package:alhadid/models/section.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
@@ -109,5 +110,30 @@ class DictionaryDataBaseHelper {
     });
 
     return hadiths.map((e) => Chapter.fromMap(e)).toList();
+  }
+
+  Future<List<Section>> getAllTheSections() async {
+    if (_db == null) {
+      throw "Database is not initialized, initialize using [init()] function";
+    }
+    List<Map<String, dynamic>> hadiths = [];
+
+    await _db!.transaction((txn) async {
+      hadiths = await txn.query(
+        "chapter",
+        columns: [
+          "id",
+          "book_id",
+          "book_name",
+          "chapter_id",
+          "section_id",
+          "title",
+          "preface",
+          "number",
+        ],
+      );
+    });
+
+    return hadiths.map((e) => Section.fromMap(e)).toList();
   }
 }
