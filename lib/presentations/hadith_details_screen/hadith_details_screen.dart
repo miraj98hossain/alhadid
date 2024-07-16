@@ -1,5 +1,11 @@
+import 'dart:developer';
+
+import 'package:alhadid/models/hadith.dart';
+import 'package:alhadid/presentations/hadith_details_screen/get_controller/hadith_details_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class HadithDetailsScreen extends StatefulWidget {
   const HadithDetailsScreen({super.key});
@@ -9,36 +15,96 @@ class HadithDetailsScreen extends StatefulWidget {
 }
 
 class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
+  final hadithDetailsController = Get.put(HadithDetailsController());
+
+  @override
+  void initState() {
+    hadithDetailsController.initializeDatabase();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromRGBO(244, 244, 244, 1),
         appBar: const CustomAppBar(),
-        body: Container(
-          child: Column(
-            children: [
-              Container(
-                height: 100,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                height: 100,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              )
-            ],
-          ),
+        body: Obx(
+          () {
+            if (hadithDetailsController.loading.value) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (hadithDetailsController.error.value) {
+              return const Center(
+                child: Text("Couldn't load data"),
+              );
+            }
+            if (hadithDetailsController.success.value) {
+              return ListView.builder(
+                itemCount: hadithDetailsController.hadithList.length,
+                itemBuilder: (context, index) {
+                  Hadith hadith = hadithDetailsController.hadithList[index];
+                  log(hadith.toJson());
+                  return Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text:
+                                          "${hadith.chapterId}/${hadith.sectionId}."
+                                          "অধ্যায়ঃ ",
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Color.fromRGBO(17, 140, 111, 1),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: hadith.bn,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        height: 100,
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      )
+                    ],
+                  );
+                },
+              );
+            }
+            return Container();
+          },
         ),
       ),
     );
