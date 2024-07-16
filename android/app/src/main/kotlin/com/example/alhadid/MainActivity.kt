@@ -1,4 +1,4 @@
-package com.example.alhadid
+package com.example.alhadith
 
 import io.flutter.embedding.android.FlutterActivity
 
