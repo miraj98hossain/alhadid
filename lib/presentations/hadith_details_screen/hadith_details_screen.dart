@@ -214,8 +214,13 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(15),
-                                          color: const Color.fromRGBO(
-                                              74, 182, 146, 1),
+                                          // color: const Color.fromRGBO(
+                                          //     74, 182, 146, 1),
+                                          color: Color(
+                                            int.parse(
+                                              "0xFF${hadithList[index].gradeColor!.substring(1)}",
+                                            ),
+                                          ),
                                         ),
                                         child: Center(
                                           child: Text(
