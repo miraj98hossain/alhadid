@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:alhadid/models/hadith.dart';
 import 'package:alhadid/models/section.dart';
 import 'package:alhadid/presentations/hadith_details_screen/get_controller/hadith_details_controller.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bangla_converter/convert_file/convert_code.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class HadithDetailsScreen extends StatefulWidget {
   const HadithDetailsScreen({super.key});
@@ -60,6 +57,7 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                     Container(
                       width: double.infinity,
                       margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
@@ -74,6 +72,7 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                                     text: "${section.number} ",
                                     style: const TextStyle(
                                       fontSize: 15,
+                                      fontFamily: 'kalpurush',
                                       color: Color.fromRGBO(17, 140, 111, 1),
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -81,6 +80,7 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                                       TextSpan(
                                         text: index == 0 ? section.title : "",
                                         style: const TextStyle(
+                                          fontFamily: 'kalpurush',
                                           fontSize: 15,
                                           color: Colors.black,
                                         ),
@@ -90,6 +90,35 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                                 ),
                               )
                             ],
+                          ),
+                          Visibility(
+                            visible: section.preface != null &&
+                                section.preface!.isNotEmpty,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Divider(
+                                  color: Colors.grey.shade200,
+                                  thickness: 1,
+                                  height: 1,
+                                  indent: 0,
+                                  endIndent: 0,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  section.preface ?? "",
+                                  style: TextStyle(
+                                    fontFamily: 'kalpurush',
+                                    fontSize: 15,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                )
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -99,12 +128,138 @@ class _HadithDetailsScreenState extends State<HadithDetailsScreen> {
                       hadithList.length,
                       (index) {
                         return Container(
-                          height: 100,
                           width: double.infinity,
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          margin: const EdgeInsets.only(
+                              bottom: 10, left: 10, right: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 45,
+                                    width: 45,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/images/customShape.png",
+                                        ),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        hadithDetailsController
+                                                .bookList.first.abvrCode ??
+                                            "",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        hadithDetailsController
+                                                .bookList.first.title ??
+                                            "",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontFamily: 'kalpurush',
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "হাদিস: ${BanglaConverter.engToBan(hadithList[index].hadithId)}",
+                                        style: const TextStyle(
+                                          fontFamily: 'kalpurush',
+                                          fontSize: 15,
+                                          color:
+                                              Color.fromRGBO(17, 140, 111, 1),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: const Color.fromRGBO(
+                                              74, 182, 146, 1),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            hadithList[index].grade ?? "",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.more_vert_rounded,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                hadithList[index].ar ?? "",
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(
+                                  fontFamily: 'Arabic',
+                                  fontSize: 15,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                "${hadithList[index].narrator} থেকে বর্ণিত:",
+                                style: const TextStyle(
+                                  fontFamily: 'kalpurush',
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(17, 140, 111, 1),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                "${hadithList[index].bn}",
+                                style: const TextStyle(
+                                  fontFamily: 'kalpurush',
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -155,6 +310,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Text(
                   'সহিহ বুখারী',
                   style: TextStyle(
+                    fontFamily: 'kalpurush',
                     color: Colors.white,
                     fontSize: 20,
                   ),
@@ -162,6 +318,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Text(
                   'ওহীর সূচনা অধ্যায়',
                   style: TextStyle(
+                    fontFamily: 'kalpurush',
                     color: Colors.white,
                     fontSize: 15,
                   ),

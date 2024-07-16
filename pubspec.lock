@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  bangla_converter:
+    dependency: "direct main"
+    description:
+      name: bangla_converter
+      sha256: "8d22f27f6248d53efa2e454df4d2b5bab1b7323f25a73f7ef6ee00b6b678c71a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   boolean_selector:
     dependency: transitive
     description:
